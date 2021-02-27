@@ -18,11 +18,21 @@ package com.example.androiddevchallenge
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.example.androiddevchallenge.data.DummyPuppyData
+import com.example.androiddevchallenge.lists.PuppyList
+import com.example.androiddevchallenge.model.Puppy
 import com.example.androiddevchallenge.ui.theme.MyTheme
 
 class MainActivity : AppCompatActivity() {
@@ -30,17 +40,47 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             MyTheme {
-                MyApp()
+                MyApp { onClick(it) }
             }
         }
+    }
+
+    private fun onClick(puppy: Puppy) {
+        // redirect to detail page.
+        startActivity(PuppyDetailActivity.getCallingIntent(this, puppy))
     }
 }
 
 // Start building your app here!
 @Composable
-fun MyApp() {
+fun MyApp(onClick: (Puppy) -> Unit) {
     Surface(color = MaterialTheme.colors.background) {
-        Text(text = "Ready... Set... GO!")
+        Surface(color = MaterialTheme.colors.background) {
+            Column(modifier = Modifier.padding(top = 16.dp)) {
+                Text(
+                    text = "Adopt a puppy :)",
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(horizontal = 16.dp)
+                )
+                Text(
+                    text = "Be loved. Adopt a doggo.",
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    color = Color.LightGray,
+                    modifier = Modifier.padding(
+                        top = 4.dp,
+                        bottom = 8.dp,
+                        start = 16.dp,
+                        end = 16.dp
+                    )
+                )
+                PuppyList(
+                    puppies = DummyPuppyData.getDummyPuppies(),
+                    onClick = onClick
+                )
+            }
+        }
     }
 }
 
@@ -48,7 +88,7 @@ fun MyApp() {
 @Composable
 fun LightPreview() {
     MyTheme {
-        MyApp()
+        MyApp {}
     }
 }
 
@@ -56,6 +96,6 @@ fun LightPreview() {
 @Composable
 fun DarkPreview() {
     MyTheme(darkTheme = true) {
-        MyApp()
+        MyApp {}
     }
 }
